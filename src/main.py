@@ -20,7 +20,7 @@ from contextlib import asynccontextmanager
 
 # Imports required by the service's model
 import pandas as pd
-from imblearn.combine import SMOTETomek, SMOTEENN
+from imblearn.combine import SMOTEENN
 from imblearn.over_sampling import SMOTE
 import io
 
@@ -81,8 +81,6 @@ class MyService(Service):
 
         df = pd.read_csv(io.StringIO(raw), sep=";")
 
-        df_saved = df.copy()
-
         # start by removing empty columns that are not target
         df = df.dropna(axis=1, how='all')
         df = df.dropna()
@@ -95,25 +93,22 @@ class MyService(Service):
         # convert categorical columns to numerical
         for col, cat in categorical_columns.items():
             df[col] = cat.codes
-        
-        
+
         X, y = df.drop(columns=['target']).to_numpy(), df['target'].to_numpy()
-        
+
         smote = SMOTE(random_state=42, k_neighbors=1)
         sme = SMOTEENN(random_state=42, smote=smote)
         X_res, y_res = sme.fit_resample(X, y)
 
         if X_res.shape[0] == 0:
             raise ValueError("SMOTEENN returned an empty dataframe")
-        
+
         df_res = pd.DataFrame(X_res, columns=df.drop(columns=['target']).columns)
         df_res['target'] = y_res
-
 
         # revert the categorical columns
         for col, cat in categorical_columns.items():
             df_res[col] = cat.categories[df_res[col].astype(int)]
-
 
         csv_string = df_res.to_csv(index=False)
         csv_bytes = csv_string.encode('utf-8')
@@ -180,11 +175,13 @@ async def lifespan(app: FastAPI):
 
 
 # TODO: 6. CHANGE THE API DESCRIPTION AND SUMMARY
-api_description = """This service uses rebalances a dataset based on a target class, it combines oversampling (SMOTE) and undersampling (ENN) to be more generalizable.
+api_description = """This service uses rebalances a dataset based on a target class,
+it combines oversampling (SMOTE) and undersampling (ENN) to be more generalizable.
 In order for the service to work your dataset label column must be called "target".
 Finally, avoid having multiple empty lines at the end of the file.
 """
-api_summary = """This service rebalances a dataset based on a target class, it combines oversampling (SMOTE) and undersampling (ENN) to be more generalizable.
+api_summary = """This service rebalances a dataset based on a target class,
+it combines oversampling (SMOTE) and undersampling (ENN) to be more generalizable.
 In order for the service to work your dataset label column must be called "target".
 Finally, avoid having multiple empty lines at the end of the file.
 """
