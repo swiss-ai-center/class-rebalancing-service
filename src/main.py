@@ -64,7 +64,6 @@ class MyService(Service):
         )
         self._logger = get_logger(settings)
 
-    # TODO: 5. CHANGE THE PROCESS METHOD (CORE OF THE SERVICE)
     def process(self, data):
         raw = str(data["dataset"].data.decode("utf-8-sig").encode("utf-8"))
         raw = (
@@ -174,16 +173,12 @@ async def lifespan(app: FastAPI):
         await service_service.graceful_shutdown(my_service, engine_url)
 
 
-# TODO: 6. CHANGE THE API DESCRIPTION AND SUMMARY
 api_description = """This service uses rebalances a dataset based on a target class,
 it combines oversampling (SMOTE) and undersampling (ENN) to be more generalizable.
 In order for the service to work your dataset label column must be called "target".
 Finally, avoid having multiple empty lines at the end of the file.
 """
-api_summary = """This service rebalances a dataset based on a target class,
-it combines oversampling (SMOTE) and undersampling (ENN) to be more generalizable.
-In order for the service to work your dataset label column must be called "target".
-Finally, avoid having multiple empty lines at the end of the file.
+api_summary = """This service rebalances a dataset based on a target class.
 """
 
 # Define the FastAPI application with information
