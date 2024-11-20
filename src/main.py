@@ -59,8 +59,7 @@ class MyService(Service):
                 ),
             ],
             has_ai=False,
-            # OPTIONAL: CHANGE THE DOCS URL TO YOUR SERVICE'S DOCS
-            docs_url="https://docs.swiss-ai-center.ch/reference/core-concepts/service/",
+            docs_url="https://docs.swiss-ai-center.ch/reference/services/class-rebalancing/",
         )
         self._logger = get_logger(settings)
 
@@ -173,12 +172,12 @@ async def lifespan(app: FastAPI):
         await service_service.graceful_shutdown(my_service, engine_url)
 
 
-api_description = """This service uses rebalances a dataset based on a target class,
-it combines oversampling (SMOTE) and undersampling (ENN) to be more generalizable.
+api_description = """This service re-balances a dataset based on a target class,
+it combines oversampling (SMOTE) and under sampling (ENN) to be more generalizable.
 In order for the service to work your dataset label column must be called "target".
 Finally, avoid having multiple empty lines at the end of the file.
 """
-api_summary = """This service rebalances a dataset based on a target class.
+api_summary = """This service re-balances a dataset based on a target class.
 """
 
 # Define the FastAPI application with information
