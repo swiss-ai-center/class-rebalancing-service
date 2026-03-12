@@ -117,4 +117,3 @@ class MyService(Service):
                 type=FieldDescriptionType.TEXT_CSV
             )
         }
-
